@@ -1,0 +1,30 @@
+name: Build IPA
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate project
+        run: xcodegen generate
+
+      - name: Build unsigned IPA
+        run: |
+          xcodebuild -project TapApp.xcodeproj -scheme TapApp -configuration Release -sdk iphoneos -derivedDataPath build CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" build
+          mkdir -p Payload
+          cp -r build/Build/Products/Release-iphoneos/TapApp.app Payload/
+          zip -r TapApp.ipa Payload
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TapApp-ipa
+          path: TapApp.ipa
