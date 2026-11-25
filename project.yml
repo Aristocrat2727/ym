@@ -9,8 +9,9 @@ targets:
     platform: iOS
     sources:
       - Sources
-    settings:
+        settings:
       base:
+        GENERATE_INFOPLIST_FILE: YES
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         TARGETED_DEVICE_FAMILY: "1,2"
         CODE_SIGN_IDENTITY: ""
